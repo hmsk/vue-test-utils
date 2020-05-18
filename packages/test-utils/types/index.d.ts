@@ -45,21 +45,24 @@ type NameSelector = {
  * It has common methods on both Wrapper and WrapperArray
  */
 interface BaseWrapper {
-  contains (selector: Selector): boolean
+  contains (selector: Selector): boolean | void
   exists (): boolean
-  isVisible (): boolean
+  isVisible (): boolean | void
 
+  at (): void
   attributes(): { [name: string]: string }
   attributes(key: string): string | void
-  classes(): Array<string>
+  classes(): Array<string> | void
   classes(className: string): boolean
   props(): { [name: string]: any }
   props(key: string): any | void
   overview(): void
+  filter(): void
 
-  is (selector: Selector): boolean
-  isEmpty (): boolean
-  isVueInstance (): boolean
+  is (): void
+  is (selector: Selector): boolean | void
+  isEmpty (): boolean | void
+  isVueInstance (): boolean | void
 
   setData (data: object): Promise<void> | void
   setMethods (data: object): void
@@ -68,6 +71,10 @@ interface BaseWrapper {
   setValue (value: any): Promise<void> | void
   setChecked (checked?: boolean): Promise<void> | void
   setSelected (): Promise<void> | void
+
+  emitted (): { [name: string]: Array<Array<any>>|undefined } | void
+  emitted (event: string): Array<any>|undefined
+  emittedByOrder (): Array<{ name: string, args: Array<any> }> | void
 
   trigger (eventName: string, options?: object): Promise<void> | void
   destroy (): void
@@ -89,17 +96,39 @@ export interface Wrapper<V extends Vue | null> extends BaseWrapper {
   html (): string
   text (): string
   name (): string
+  overview (): void
 
   emitted (): { [name: string]: Array<Array<any>>|undefined }
   emitted (event: string): Array<any>|undefined
   emittedByOrder (): Array<{ name: string, args: Array<any> }>
+
+  attributes(): { [name: string]: string }
+  attributes(key: string): string
+  classes(): Array<string>
+  classes(className: string): boolean
+  contains (selector: Selector): boolean
+  is (): boolean
+  is (selector: Selector): boolean
+  isEmpty (): boolean
+  isVisible (): boolean
+  isVueInstance (): boolean
+  props (): { [name: string]: any }
+  props (key: string): any
+  setData (data: object): Promise<void>
+  setProps (props: object): Promise<void>
+  setValue (value: any): Promise<void>
+  setChecked (checked?: boolean): Promise<void>
+  setSelected (): Promise<void>
+  trigger (eventName: string, options?: object): Promise<void>
 }
 
 export interface WrapperArray<V extends Vue | null> extends BaseWrapper {
   readonly length: number;
   readonly wrappers: Array<Wrapper<V>>;
 
+  at(): void
   at(index: number): Wrapper<V>;
+  filter(): void
   filter(
     predicate: (
       value: Wrapper<V>,
