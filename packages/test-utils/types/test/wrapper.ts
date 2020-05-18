@@ -21,6 +21,8 @@ bool = wrapper.is(normalOptions)
 bool = wrapper.isEmpty()
 bool = wrapper.isVueInstance()
 
+wrapper.overview()
+
 wrapper.vm.$emit('hello')
 
 let n: number = wrapper.emitted().hello![0][0]
