@@ -9,7 +9,7 @@ type VueClass<V extends Vue> = (new (...args: any[]) => V) & typeof Vue
 /**
  * Utility type for a selector
  */
-type Selector = string | Component
+type Selector = string | Component | RefSelector | NameSelector
 
 /**
  * Utility type for slots
@@ -79,38 +79,12 @@ export interface Wrapper<V extends Vue | null> extends BaseWrapper {
   readonly element: HTMLElement
   readonly options: WrapperOptions
 
-  get<R extends Vue> (selector: VueClass<R>): Wrapper<R>
-  get<R extends Vue> (selector: ComponentOptions<R>): Wrapper<R>
-  get<Props = DefaultProps, PropDefs = PropsDefinition<Props>>(selector: FunctionalComponentOptions<Props, PropDefs>): Wrapper<Vue>
-  get (selector: string): Wrapper<Vue>
-  get (selector: RefSelector): Wrapper<Vue>
-  get (selector: NameSelector): Wrapper<Vue>
+  get (selector: Selector): Wrapper<V>
+  find (selector: Selector): Wrapper<V>
+  findComponent (selector: Selector): Wrapper<V>
 
-  find<R extends Vue> (selector: VueClass<R>): Wrapper<R>
-  find<R extends Vue> (selector: ComponentOptions<R>): Wrapper<R>
-  find<Props = DefaultProps, PropDefs = PropsDefinition<Props>>(selector: FunctionalComponentOptions<Props, PropDefs>): Wrapper<Vue>
-  find (selector: string): Wrapper<Vue>
-  find (selector: RefSelector): Wrapper<Vue>
-  find (selector: NameSelector): Wrapper<Vue>
-
-  findAll<R extends Vue> (selector: VueClass<R>): WrapperArray<R>
-  findAll<R extends Vue> (selector: ComponentOptions<R>): WrapperArray<R>
-  findAll<Props = DefaultProps, PropDefs = PropsDefinition<Props>>(selector: FunctionalComponentOptions<Props, PropDefs>): WrapperArray<Vue>
-  findAll (selector: string): WrapperArray<Vue>
-  findAll (selector: RefSelector): WrapperArray<Vue>
-  findAll (selector: NameSelector): WrapperArray<Vue>
-
-  findComponent<R extends Vue> (selector: VueClass<R>): Wrapper<R>
-  findComponent<R extends Vue> (selector: ComponentOptions<R>): Wrapper<R>
-  findComponent<Props = DefaultProps, PropDefs = PropsDefinition<Props>>(selector: FunctionalComponentOptions<Props, PropDefs>): Wrapper<Vue>
-  findComponent (selector: RefSelector): Wrapper<Vue>
-  findComponent (selector: NameSelector): Wrapper<Vue>
-
-  findAllComponents<R extends Vue> (selector: VueClass<R>): WrapperArray<R>
-  findAllComponents<R extends Vue> (selector: ComponentOptions<R>): WrapperArray<R>
-  findAllComponents<Props = DefaultProps, PropDefs = PropsDefinition<Props>>(selector: FunctionalComponentOptions<Props, PropDefs>): WrapperArray<Vue>
-  findAllComponents(selector: RefSelector): WrapperArray<Vue>
-  findAllComponents(selector: NameSelector): WrapperArray<Vue>
+  findAll (selector: Selector): WrapperArray<V>
+  findAllComponents(selector: Selector): WrapperArray<V>
 
   html (): string
   text (): string
@@ -121,7 +95,7 @@ export interface Wrapper<V extends Vue | null> extends BaseWrapper {
   emittedByOrder (): Array<{ name: string, args: Array<any> }>
 }
 
-export interface WrapperArray<V extends Vue> extends BaseWrapper {
+export interface WrapperArray<V extends Vue | null> extends BaseWrapper {
   readonly length: number;
   readonly wrappers: Array<Wrapper<V>>;
 
@@ -132,7 +106,7 @@ export interface WrapperArray<V extends Vue> extends BaseWrapper {
       index: number,
       array: Wrapper<V>[]
     ) => any
-  ): WrapperArray<Vue>;
+  ): WrapperArray<V>;
 }
 
 interface WrapperOptions {
